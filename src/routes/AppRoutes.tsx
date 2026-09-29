@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { ROUTES } from "./paths";
 
+import HomePage from "../pages/public/HomePage";
 import AssessmentPage from "../pages/assessment/AssessmentPage";
 import CareersPage from "../pages/careers/CareersPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
@@ -14,9 +15,15 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route
-       path="/api-test"
+        path={ROUTES.home}
+        element={<HomePage />}
+      />
+
+      <Route
+        path="/api-test"
         element={<ApiTestPage />}
-       />
+      />
+
       <Route
         path={ROUTES.assessment}
         element={<AssessmentPage />}
@@ -67,7 +74,10 @@ export default function AppRoutes() {
         element={<div>Settings</div>}
       />
 
-      <Route path={ROUTES.notFound} element={<NotFoundPage />} />
+      <Route
+        path={ROUTES.notFound}
+        element={<NotFoundPage />}
+      />
     </Routes>
   );
 }
