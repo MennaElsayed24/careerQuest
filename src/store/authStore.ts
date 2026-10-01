@@ -1,5 +1,10 @@
 import { create } from "zustand";
 import type { User } from "../types/user";
+import {
+  clearCurrentUser,
+  getCurrentUser,
+  saveCurrentUser,
+} from "../services/auth/localAuth";
 
 interface AuthState {
   user: User | null;
@@ -10,18 +15,22 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: getCurrentUser(),
+  isAuthenticated: getCurrentUser() !== null,
 
-  setUser: (user) =>
+  setUser: (user) => {
+    saveCurrentUser(user);
     set({
       user,
       isAuthenticated: true,
-    }),
+    });
+  },
 
-  clearUser: () =>
+  clearUser: () => {
+    clearCurrentUser();
     set({
       user: null,
       isAuthenticated: false,
-    }),
+    });
+  },
 }));

@@ -16,6 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../routes/paths";
 
 const processSteps = [
   {
@@ -165,11 +166,11 @@ export default function HomePage() {
           </nav>
 
           <div className="landing-header-actions">
-            <Link to="/assessment" className="landing-header-link">
+            <Link to={ROUTES.signIn} className="landing-header-link">
               Sign in
             </Link>
 
-            <Link to="/assessment" className="landing-header-cta">
+            <Link to={ROUTES.signUp} className="landing-header-cta">
               Get started
               <ArrowRight size={15} />
             </Link>
@@ -198,7 +199,7 @@ export default function HomePage() {
               </p>
 
               <div className="landing-hero-actions">
-                <Link to="/assessment" className="landing-primary-button">
+                <Link to={ROUTES.signUp} className="landing-primary-button">
                   Discover your path
                   <ArrowRight size={17} />
                 </Link>
@@ -552,7 +553,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <Link to="/assessment" className="landing-final-button">
+              <Link to={ROUTES.signUp} className="landing-final-button">
                 Start my assessment
                 <ArrowRight size={17} />
               </Link>
