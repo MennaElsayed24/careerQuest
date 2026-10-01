@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type {
   Roadmap,
   RoadmapItemStatus,
@@ -19,63 +20,67 @@ interface RoadmapState {
   resetRoadmap: () => void;
 }
 
-export const useRoadmapStore =
-  create<RoadmapState>((set) => ({
-    roadmap: null,
+export const useRoadmapStore = create<RoadmapState>()(
+  persist(
+    (set) => ({
+      roadmap: null,
 
-    setRoadmap: (roadmap) =>
-      set({
-        roadmap,
-      }),
+      setRoadmap: (roadmap) =>
+        set({
+          roadmap,
+        }),
 
-    updateItemStatus: (itemId, status) =>
-      set((state) => {
-        if (!state.roadmap) {
-          return state;
-        }
+      updateItemStatus: (itemId, status) =>
+        set((state) => {
+          if (!state.roadmap) {
+            return state;
+          }
 
-        return {
-          roadmap: {
-            ...state.roadmap,
+          return {
+            roadmap: {
+              ...state.roadmap,
 
-            items: state.roadmap.items.map(
-              (item) =>
+              items: state.roadmap.items.map((item) =>
                 item.id === itemId
                   ? {
                       ...item,
                       status,
                     }
                   : item,
-            ),
-          },
-        };
-      }),
+              ),
+              updatedAt: new Date().toISOString(),
+            },
+          };
+        }),
 
-    completeItem: (itemId) =>
-      set((state) => {
-        if (!state.roadmap) {
-          return state;
-        }
+      completeItem: (itemId) =>
+        set((state) => {
+          if (!state.roadmap) {
+            return state;
+          }
 
-        return {
-          roadmap: {
-            ...state.roadmap,
+          return {
+            roadmap: {
+              ...state.roadmap,
 
-            items: state.roadmap.items.map(
-              (item) =>
+              items: state.roadmap.items.map((item) =>
                 item.id === itemId
                   ? {
                       ...item,
                       status: "completed",
                     }
                   : item,
-            ),
-          },
-        };
-      }),
+              ),
+              updatedAt: new Date().toISOString(),
+            },
+          };
+        }),
 
-    resetRoadmap: () =>
-      set({
-        roadmap: null,
-      }),
-  }));
+      resetRoadmap: () =>
+        set({
+          roadmap: null,
+        }),
+    }),
+    { name: "careerquest-roadmap" },
+  ),
+);

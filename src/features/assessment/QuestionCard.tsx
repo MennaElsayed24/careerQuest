@@ -19,16 +19,15 @@ export default function QuestionCard({
   onChange,
 }: QuestionCardProps) {
   return (
-    <section>
-      <p>
-        Question {questionNumber} of{" "}
-        {totalQuestions}
-      </p>
+    <section className="assessment-question-card" aria-labelledby="assessment-question-title">
+      <span className="assessment-kicker">
+        QUESTION {questionNumber} OF {totalQuestions}
+      </span>
 
-      <h2>{question.question}</h2>
+      <h2 id="assessment-question-title">{question.question}</h2>
 
       {question.description && (
-        <p>{question.description}</p>
+        <p className="assessment-question-description">{question.description}</p>
       )}
 
       <QuestionOptions

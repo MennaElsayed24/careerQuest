@@ -27,6 +27,14 @@ export interface AssessmentAnswer {
   value: string | string[] | number;
 }
 
+export interface AssessmentHistoryEntry {
+  id: string;
+  startedAt?: string;
+  completedAt: string;
+  answers: AssessmentAnswer[];
+  questionCount: number;
+}
+
 export interface AssessmentResult {
   careerId: string;
   matchPercentage: number;

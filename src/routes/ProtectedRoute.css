@@ -1,0 +1,14 @@
+.auth-session-loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  color: #877b88;
+  font-size: 13px;
+  animation: cq-fade-in 180ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-session-loading {
+    animation: none;
+  }
+}

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
   AssessmentAnswer,
+  AssessmentHistoryEntry,
   AssessmentResult,
   AssessmentStatus,
 } from "../types/assessment";
@@ -9,9 +10,11 @@ import type {
 interface AssessmentState {
   answers: AssessmentAnswer[];
   results: AssessmentResult[];
+  history: AssessmentHistoryEntry[];
 
   currentQuestionIndex: number;
   status: AssessmentStatus;
+  startedAt: string | null;
 
   setAnswer: (
     questionId: string,
@@ -26,6 +29,7 @@ interface AssessmentState {
   previousQuestion: () => void;
 
   setResults: (results: AssessmentResult[]) => void;
+  removeHistoryEntry: (entryId: string) => void;
 
   startAssessment: () => void;
   completeAssessment: () => void;
@@ -36,8 +40,10 @@ interface AssessmentState {
 const initialState = {
   answers: [],
   results: [],
+  history: [],
   currentQuestionIndex: 0,
   status: "not-started" as AssessmentStatus,
+  startedAt: null as string | null,
 };
 
 export const useAssessmentStore =
@@ -117,19 +123,47 @@ export const useAssessmentStore =
             results,
           }),
 
+        removeHistoryEntry: (entryId) =>
+          set((state) => ({
+            history: state.history.filter((entry) => entry.id !== entryId),
+          })),
+
         startAssessment: () =>
           set({
             status: "in-progress",
             currentQuestionIndex: 0,
+            startedAt: new Date().toISOString(),
           }),
 
         completeAssessment: () =>
-          set({
-            status: "completed",
+          set((state) => {
+            if (state.status === "completed") return state;
+
+            const completedAt = new Date().toISOString();
+            const entry: AssessmentHistoryEntry = {
+              id: crypto.randomUUID(),
+              startedAt: state.startedAt ?? undefined,
+              completedAt,
+              answers: state.answers.map((answer) => ({
+                ...answer,
+                value: Array.isArray(answer.value)
+                  ? [...answer.value]
+                  : answer.value,
+              })),
+              questionCount: state.answers.length,
+            };
+
+            return {
+              status: "completed",
+              history: [entry, ...state.history],
+            };
           }),
 
         resetAssessment: () =>
-          set(initialState),
+          set((state) => ({
+            ...initialState,
+            history: state.history,
+          })),
       }),
       {
         name: "careerquest-assessment",

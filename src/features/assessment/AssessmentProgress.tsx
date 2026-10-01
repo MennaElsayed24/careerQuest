@@ -17,17 +17,24 @@ export default function AssessmentProgress({
         );
 
   return (
-    <div>
-      <div>
-        <span>Progress</span>
-
-        <span>{progress}%</span>
+    <div className="assessment-progress">
+      <div className="assessment-progress-heading">
+        <span>
+          QUESTION {currentQuestion + 1} OF {totalQuestions}
+        </span>
+        <strong>{progress}% complete</strong>
       </div>
 
-      <progress
-        value={progress}
-        max={100}
-      />
+      <div
+        className="assessment-progress-track"
+        role="progressbar"
+        aria-label="Assessment progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+      >
+        <span style={{ width: `${progress}%` }} />
+      </div>
     </div>
   );
 }

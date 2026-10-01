@@ -14,6 +14,8 @@ export const ROUTES = {
   roadmap: "/roadmap",
 
   resources: "/resources",
+  tasks: "/tasks",
+  notes: "/notes",
 
   dashboard: "/dashboard",
 

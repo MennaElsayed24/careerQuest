@@ -1,3 +1,5 @@
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+
 interface AssessmentNavigationProps {
   isFirstQuestion: boolean;
   isLastQuestion: boolean;
@@ -16,30 +18,36 @@ export default function AssessmentNavigation({
   onComplete,
 }: AssessmentNavigationProps) {
   return (
-    <nav>
+    <nav className="assessment-navigation" aria-label="Assessment questions">
       <button
         type="button"
+        className="assessment-secondary-button"
         onClick={onPrevious}
         disabled={isFirstQuestion}
       >
+        <ArrowLeft size={15} />
         Previous
       </button>
 
       {!isLastQuestion ? (
         <button
           type="button"
+          className="assessment-primary-button"
           onClick={onNext}
           disabled={!canContinue}
         >
           Next
+          <ArrowRight size={15} />
         </button>
       ) : (
         <button
           type="button"
+          className="assessment-primary-button"
           onClick={onComplete}
           disabled={!canContinue}
         >
-          Complete Assessment
+          Complete assessment
+          <Check size={15} />
         </button>
       )}
     </nav>

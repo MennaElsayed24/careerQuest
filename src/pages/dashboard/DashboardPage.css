@@ -43,6 +43,8 @@
   width: 250px;
   min-width: 250px;
   height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   position: sticky;
   top: 0;
   display: flex;
@@ -51,6 +53,8 @@
   padding: 30px 20px 24px;
   background: var(--cq-plum);
   color: white;
+  scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+  scrollbar-width: thin;
   z-index: 50;
 }
 
@@ -304,6 +308,7 @@
   max-width: 1500px;
   margin: 0 auto;
   padding: 43px 38px 60px;
+  animation: cq-fade-up 450ms ease both;
 }
 
 

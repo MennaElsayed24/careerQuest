@@ -4,8 +4,8 @@ import {
   BookOpen,
   CheckCircle2,
   Clock3,
-  LayoutDashboard,
   Menu,
+  Settings,
   Target,
   TrendingUp,
   UserRound,
@@ -13,16 +13,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { WORKSPACE_NAVIGATION } from "../../components/workspace/workspaceNavigation";
+import { useAuthStore } from "../../store/authStore";
 import "./DashboardPage.css";
-
-const navigation = [
-  { label: "Overview", path: "/dashboard", icon: LayoutDashboard },
-  { label: "Career Explorer", path: "/careers", icon: Target },
-  { label: "My Assessment", path: "/assessment", icon: CheckCircle2 },
-  { label: "Skill Gap", path: "/skill-gap", icon: TrendingUp },
-  { label: "My Roadmap", path: "/roadmap", icon: BookOpen },
-  { label: "Resources", path: "/resources", icon: BookOpen },
-];
 
 const tasks = [
   {
@@ -97,6 +90,16 @@ function StatCard({
 
 export default function DashboardPage() {
   const location = useLocation();
+  const user = useAuthStore((state) => state.user);
+  const displayName = user?.fullName || user?.email || "CareerQuest User";
+  const firstName = displayName.split(/\s+/)[0];
+  const initials = displayName
+    .split(/\s+/)
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
@@ -126,9 +129,12 @@ export default function DashboardPage() {
           <div className="dashboard-workspace-label">WORKSPACE</div>
 
           <nav className="dashboard-nav">
-            {navigation.map((item) => {
+            {WORKSPACE_NAVIGATION.map((item) => {
               const Icon = item.icon;
-              const active = location.pathname === item.path;
+              const active =
+                location.pathname === item.path ||
+                (item.path !== "/dashboard" &&
+                  location.pathname.startsWith(`${item.path}/`));
 
               return (
                 <Link
@@ -151,6 +157,11 @@ export default function DashboardPage() {
           <Link to="/profile" className="dashboard-nav-link">
             <UserRound size={18} strokeWidth={1.8} />
             <span>Profile</span>
+          </Link>
+
+          <Link to="/settings" className="dashboard-nav-link">
+            <Settings size={18} strokeWidth={1.8} />
+            <span>Settings</span>
           </Link>
 
           <Link to="/" className="dashboard-nav-link">
@@ -194,11 +205,11 @@ export default function DashboardPage() {
             </button>
 
             <div className="dashboard-user">
-              <div className="dashboard-avatar">JD</div>
+              <div className="dashboard-avatar">{initials || "CQ"}</div>
 
               <div className="dashboard-user-info">
-                <strong>John Doe</strong>
-                <span>Front-End Track</span>
+                <strong>{displayName}</strong>
+                <span>CareerQuest Member</span>
               </div>
             </div>
           </div>
@@ -213,7 +224,7 @@ export default function DashboardPage() {
               <h1>
                 Good morning,
                 <br />
-                <span>John.</span>
+                <span>{firstName}.</span>
               </h1>
 
               <p>
@@ -333,7 +344,7 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              <Link to="/roadmap" className="dashboard-bottom-link">
+              <Link to="/tasks" className="dashboard-bottom-link">
                 View all tasks
                 <ArrowRight size={14} />
               </Link>

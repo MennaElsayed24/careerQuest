@@ -3,14 +3,17 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/paths";
-import { signInLocalAccount } from "../../services/auth/localAuth";
+import {
+  getAuthErrorMessage,
+  signInWithEmail,
+} from "../../services/auth/platziAuth";
 import { useAuthStore } from "../../store/authStore";
 import "./SignUpPage.css";
 
 export default function SignInPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const setUser = useAuthStore((state) => state.setUser);
+  const setSession = useAuthStore((state) => state.setSession);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,17 +26,13 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      const user = await signInLocalAccount(email, password);
-      setUser(user);
+      const session = await signInWithEmail(email, password);
+      setSession(session);
       const from = (location.state as { from?: { pathname?: string } } | null)
         ?.from?.pathname;
       navigate(from ?? ROUTES.dashboard, { replace: true });
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Unable to sign in.",
-      );
+      setError(getAuthErrorMessage(submitError));
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +99,7 @@ export default function SignInPage() {
               </div>
             </div>
 
-            {error && <div className="signup-error">{error}</div>}
+            {error && <div className="signup-error" role="alert">{error}</div>}
 
             <button
               className="signup-submit"

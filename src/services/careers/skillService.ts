@@ -44,7 +44,7 @@ export const skillService = {
         {
           text: query,
           language: "en",
-          type: "http://data.europa.eu/esco/model#Skill",
+          type: "skill",
           limit: 20,
           offset: 0,
         },

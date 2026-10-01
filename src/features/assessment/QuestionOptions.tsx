@@ -45,14 +45,17 @@ export default function QuestionOptions({
   };
 
   return (
-    <div>
+    <div className="assessment-options">
       {question.options.map((option) => {
         const isSelected =
           selectedValues.includes(option.value);
+        const className = `assessment-option ${
+          isSelected ? "assessment-option-selected" : ""
+        }`;
 
         if (question.type === "multiple") {
           return (
-            <label key={option.id}>
+            <label key={option.id} className={className}>
               <input
                 type="checkbox"
                 value={option.value}
@@ -71,7 +74,7 @@ export default function QuestionOptions({
         }
 
         return (
-          <label key={option.id}>
+          <label key={option.id} className={className}>
             <input
               type="radio"
               name={question.id}

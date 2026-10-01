@@ -3,14 +3,17 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/paths";
-import { registerLocalAccount } from "../../services/auth/localAuth";
+import {
+  getAuthErrorMessage,
+  registerWithEmail,
+} from "../../services/auth/platziAuth";
 import { useAuthStore } from "../../store/authStore";
 import "./SignUpPage.css";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const setUser = useAuthStore((state) => state.setUser);
+  const setSession = useAuthStore((state) => state.setSession);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +24,7 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const passwordLength = password.length >= 8;
@@ -32,6 +36,7 @@ export default function SignUpPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
+    setSuccess("");
 
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       setError("Please complete all fields.");
@@ -50,17 +55,14 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      const user = await registerLocalAccount(name, email, password);
-      setUser(user);
-      const from = (location.state as { from?: { pathname?: string } } | null)
-        ?.from?.pathname;
+      const session = await registerWithEmail(name, email, password);
+      setSession(session);
+      const from = (
+        location.state as { from?: { pathname?: string } } | null
+      )?.from?.pathname;
       navigate(from ?? ROUTES.dashboard, { replace: true });
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Unable to create your account.",
-      );
+      setError(getAuthErrorMessage(submitError));
     } finally {
       setIsLoading(false);
     }
@@ -210,7 +212,12 @@ export default function SignUpPage() {
               </div>
             )}
 
-            {error && <div className="signup-error">{error}</div>}
+            {error && <div className="signup-error" role="alert">{error}</div>}
+            {success && (
+              <div className="signup-match is-valid" role="status">
+                {success}
+              </div>
+            )}
 
             <button
               className="signup-submit"

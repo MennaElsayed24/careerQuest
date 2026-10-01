@@ -12,6 +12,12 @@ import NotFoundPage from "../pages/NotFoundPage";
 import ApiTestPage from "../pages/ApiTestPage";
 import SignUpPage from "../pages/auth/SignUpPage";
 import SignInPage from "../pages/auth/SignInPage";
+import NotesPage from "../pages/notes/NotesPage";
+import ResourcesPage from "../pages/resources/ResourcesPage";
+import TasksPage from "../pages/tasks/TasksPage";
+import SettingsPage from "../pages/settings/SettingsPage";
+import SkillGapPage from "../pages/skill-gap/SkillGapPage";
+import HistoryPage from "../pages/history/HistoryPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -30,12 +36,14 @@ export default function AppRoutes() {
         <Route path={ROUTES.careers} element={<CareersPage />} />
         <Route path={ROUTES.careerDetails} element={<CareersPage />} />
         <Route path={ROUTES.dashboard} element={<DashboardPage />} />
-        <Route path={ROUTES.skillGap} element={<div>Skill Gap</div>} />
+        <Route path={ROUTES.tasks} element={<TasksPage />} />
+        <Route path={ROUTES.notes} element={<NotesPage />} />
+        <Route path={ROUTES.skillGap} element={<SkillGapPage />} />
         <Route path={ROUTES.roadmap} element={<RoadmapPage />} />
-        <Route path={ROUTES.resources} element={<div>Resources</div>} />
-        <Route path={ROUTES.history} element={<div>Assessment History</div>} />
+        <Route path={ROUTES.resources} element={<ResourcesPage />} />
+        <Route path={ROUTES.history} element={<HistoryPage />} />
         <Route path={ROUTES.profile} element={<ProfilePage />} />
-        <Route path={ROUTES.settings} element={<div>Settings</div>} />
+        <Route path={ROUTES.settings} element={<SettingsPage />} />
         <Route path={ROUTES.notFound} element={<NotFoundPage />} />
       </Route>
     </Routes>
