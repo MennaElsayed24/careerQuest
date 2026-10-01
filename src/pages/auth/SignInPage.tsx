@@ -8,6 +8,7 @@ import {
   signInWithEmail,
 } from "../../services/auth/platziAuth";
 import { useAuthStore } from "../../store/authStore";
+import "./SignInPage.css";
 import "./SignUpPage.css";
 
 export default function SignInPage() {
@@ -39,7 +40,7 @@ export default function SignInPage() {
   };
 
   return (
-    <main className="signup-page">
+    <main className="signup-page signin-page">
       <div className="signup-background-shape signup-shape-one" />
       <div className="signup-background-shape signup-shape-two" />
 

@@ -34,8 +34,8 @@ export default function SettingsPage() {
     setIsSigningOut(true);
     try {
       await signOutFromAuth();
+      navigate(ROUTES.home, { replace: true, flushSync: true });
       clearUser();
-      navigate(ROUTES.home, { replace: true });
     } catch (signOutError) {
       setError(
         signOutError instanceof Error
@@ -76,10 +76,6 @@ export default function SettingsPage() {
             <div>
               <dt>Account created</dt>
               <dd>{createdDate}</dd>
-            </div>
-            <div>
-              <dt>Identity provider</dt>
-              <dd>Platzi Fake Store API</dd>
             </div>
           </dl>
 

@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  Bell,
   BookOpen,
   CheckCircle2,
   Clock3,
@@ -14,53 +13,16 @@ import {
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { WORKSPACE_NAVIGATION } from "../../components/workspace/workspaceNavigation";
+import { initialTasks, type Task } from "../../data/tasks";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useAuthStore } from "../../store/authStore";
+import { useRoadmapStore } from "../../store/roadmapStore";
+import type { Career } from "../../types/career";
 import "./DashboardPage.css";
 
-const tasks = [
-  {
-    title: "Complete React Hooks lesson",
-    category: "React",
-    priority: "High",
-    status: "In Progress",
-  },
-  {
-    title: "Review JavaScript ES6+",
-    category: "JavaScript",
-    priority: "Medium",
-    status: "Pending",
-  },
-  {
-    title: "Watch React Router video",
-    category: "Routing",
-    priority: "Medium",
-    status: "Pending",
-  },
-  {
-    title: "Prepare Dashboard wireframe",
-    category: "Project",
-    priority: "High",
-    status: "Done",
-  },
-];
-
-const resources = [
-  {
-    title: "React Basics Guide",
-    category: "React",
-    description: "Build a strong foundation with React fundamentals.",
-  },
-  {
-    title: "JavaScript ES6+ Handbook",
-    category: "JavaScript",
-    description: "Review modern JavaScript syntax and concepts.",
-  },
-  {
-    title: "CSS Flexbox & Grid",
-    category: "CSS",
-    description: "Create responsive layouts with modern CSS.",
-  },
-];
+interface ProfilePreferences {
+  skills: string[];
+}
 
 function StatCard({
   label,
@@ -91,6 +53,34 @@ function StatCard({
 export default function DashboardPage() {
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
+  const roadmap = useRoadmapStore((state) => state.roadmap);
+  const [tasks] = useLocalStorage<Task[]>("careerquest_tasks", initialTasks);
+  const [profile] = useLocalStorage<ProfilePreferences>("careerquest_profile", {
+    skills: [],
+  });
+  const [savedCareers] = useLocalStorage<Career[]>(
+    "careerquest_saved_careers",
+    [],
+  );
+  const [targetCareerId] = useLocalStorage<string | null>(
+    "careerquest_target_career_id",
+    null,
+  );
+  const targetCareer = savedCareers.find((career) => career.id === targetCareerId);
+  const activeRoadmap =
+    roadmap?.careerId === targetCareerId ? roadmap : null;
+  const completedTasks = tasks.filter((task) => task.status === "Done").length;
+  const openTasks = tasks.filter((task) => task.status !== "Done").length;
+  const completedSkills =
+    activeRoadmap?.items.filter((item) => item.status === "completed").length ?? 0;
+  const roadmapSkillCount = activeRoadmap?.items.length ?? 0;
+  const roadmapProgress = roadmapSkillCount
+    ? Math.round((completedSkills / roadmapSkillCount) * 100)
+    : 0;
+  const nextSkills =
+    activeRoadmap?.items
+      .filter((item) => item.status !== "completed")
+      .slice(0, 3) ?? [];
   const displayName = user?.fullName || user?.email || "CareerQuest User";
   const firstName = displayName.split(/\s+/)[0];
   const initials = displayName
@@ -106,8 +96,8 @@ export default function DashboardPage() {
 
   const filteredTasks =
     activeTab === "All"
-      ? tasks
-      : tasks.filter((task) => task.status === activeTab);
+      ? tasks.slice(0, 4)
+      : tasks.filter((task) => task.status === activeTab).slice(0, 4);
 
   return (
     <div className="dashboard-page">
@@ -192,18 +182,9 @@ export default function DashboardPage() {
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
-            <div className="dashboard-search">
-              <span>⌕</span>
-              <input placeholder="Search anything..." />
-            </div>
           </div>
 
           <div className="dashboard-topbar-right">
-            <button className="dashboard-notification" aria-label="Notifications">
-              <Bell size={19} strokeWidth={1.8} />
-              <i />
-            </button>
-
             <div className="dashboard-user">
               <div className="dashboard-avatar">{initials || "CQ"}</div>
 
@@ -243,30 +224,30 @@ export default function DashboardPage() {
           {/* STATS */}
           <section className="dashboard-stats">
             <StatCard
-              label="Today's Progress"
-              value="8/12"
-              detail="tasks completed"
+              label="Tasks Completed"
+              value={`${completedTasks}/${tasks.length}`}
+              detail="of your tasks"
               icon={CheckCircle2}
             />
 
             <StatCard
-              label="Learning Progress"
-              value="67%"
-              detail="Front-End Track"
+              label="Roadmap Progress"
+              value={`${roadmapProgress}%`}
+              detail={targetCareer?.title ?? "Set a target career"}
               icon={TrendingUp}
             />
 
             <StatCard
-              label="Recent Tasks"
-              value="3"
-              detail="tasks remaining"
+              label="Open Tasks"
+              value={String(openTasks)}
+              detail="pending or in progress"
               icon={Clock3}
             />
 
             <StatCard
-              label="Learning Hours"
-              value="24.5"
-              detail="this month"
+              label="Profile Skills"
+              value={String(profile.skills.length)}
+              detail="skills you've added"
               icon={BookOpen}
             />
           </section>
@@ -362,21 +343,28 @@ export default function DashboardPage() {
                     <h2>Learning Progress</h2>
                   </div>
 
-                  <strong className="dashboard-percent">67%</strong>
+                  <strong className="dashboard-percent">{roadmapProgress}%</strong>
                 </div>
 
                 <div className="dashboard-progress-track">
-                  <div className="dashboard-progress-fill" />
+                  <div
+                    className="dashboard-progress-fill"
+                    style={{ width: `${roadmapProgress}%` }}
+                  />
                 </div>
 
                 <div className="dashboard-progress-labels">
-                  <span>Front-End Track</span>
-                  <span>React Fundamentals</span>
+                  <span>{targetCareer?.title ?? "No target career"}</span>
+                  <span>
+                    {nextSkills[0]?.title ??
+                      (roadmapSkillCount ? "All skills complete" : "No roadmap yet")}
+                  </span>
                 </div>
 
                 <p>
-                  You're making steady progress. Keep completing your lessons
-                  to move through the track.
+                  {roadmapSkillCount
+                    ? `${completedSkills} of ${roadmapSkillCount} roadmap skills completed.`
+                    : "Choose a target career and create a roadmap to track your learning progress."}
                 </p>
 
                 <Link to="/roadmap" className="dashboard-bottom-link">
@@ -425,44 +413,60 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          {/* RESOURCES */}
+          {/* ROADMAP SKILLS */}
           <section className="dashboard-card dashboard-resources-card">
             <div className="dashboard-card-header">
               <div>
-                <span className="dashboard-card-eyebrow">KEEP LEARNING</span>
-                <h2>Recommended Resources</h2>
+                <span className="dashboard-card-eyebrow">YOUR NEXT STEPS</span>
+                <h2>Upcoming Roadmap Skills</h2>
               </div>
 
-              <Link to="/resources" className="dashboard-small-button">
-                View all
+              <Link to="/roadmap" className="dashboard-small-button">
+                View roadmap
                 <ArrowRight size={14} />
               </Link>
             </div>
 
             <div className="dashboard-resource-grid">
-              {resources.map((resource) => (
+              {nextSkills.map((skill) => (
                 <article
                   className="dashboard-resource"
-                  key={resource.title}
+                  key={skill.id}
                 >
                   <div className="dashboard-resource-top">
                     <div className="dashboard-resource-icon">
-                      <BookOpen size={18} />
+                      <Target size={18} />
                     </div>
 
-                    <span>{resource.category}</span>
+                    <span>{skill.status.replace("-", " ")}</span>
                   </div>
 
-                  <h3>{resource.title}</h3>
+                  <h3>{skill.title}</h3>
 
-                  <p>{resource.description}</p>
+                  <p>{skill.description}</p>
 
-                  <Link to="/resources">
-                    Explore resource
+                  <Link to="/roadmap">
+                    Continue roadmap
                     <ArrowRight size={14} />
                   </Link>
                 </article>
               ))}
+              {nextSkills.length === 0 && (
+                <div className="dashboard-empty dashboard-roadmap-empty">
+                  <Target size={26} />
+                  <strong>
+                    {roadmapSkillCount ? "Roadmap complete." : "No roadmap yet."}
+                  </strong>
+                  <span>
+                    {roadmapSkillCount
+                      ? "Choose another skill to keep building your career profile."
+                      : "Set a target career to create a skill plan."}
+                  </span>
+                  <Link to="/careers">
+                    Explore careers <ArrowRight size={14} />
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         </div>

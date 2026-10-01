@@ -1,0 +1,14 @@
+.signin-page .signup-card {
+  max-width: 500px;
+  margin-inline: auto;
+}
+
+.signin-page .signup-card-header h1 {
+  max-width: 390px;
+}
+
+@media (max-width: 600px) {
+  .signin-page .signup-card-header h1 {
+    max-width: none;
+  }
+}

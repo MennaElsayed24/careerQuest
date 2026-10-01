@@ -9,7 +9,6 @@ import DashboardPage from "../pages/dashboard/DashboardPage";
 import RoadmapPage from "../pages/roadmap/RoadmapPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
-import ApiTestPage from "../pages/ApiTestPage";
 import SignUpPage from "../pages/auth/SignUpPage";
 import SignInPage from "../pages/auth/SignInPage";
 import NotesPage from "../pages/notes/NotesPage";
@@ -31,7 +30,6 @@ export default function AppRoutes() {
       <Route path={ROUTES.signIn} element={<SignInPage />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/api-test" element={<ApiTestPage />} />
         <Route path={ROUTES.assessment} element={<AssessmentPage />} />
         <Route path={ROUTES.careers} element={<CareersPage />} />
         <Route path={ROUTES.careerDetails} element={<CareersPage />} />
@@ -44,8 +42,9 @@ export default function AppRoutes() {
         <Route path={ROUTES.history} element={<HistoryPage />} />
         <Route path={ROUTES.profile} element={<ProfilePage />} />
         <Route path={ROUTES.settings} element={<SettingsPage />} />
-        <Route path={ROUTES.notFound} element={<NotFoundPage />} />
       </Route>
+
+      <Route path={ROUTES.notFound} element={<NotFoundPage />} />
     </Routes>
   );
 }

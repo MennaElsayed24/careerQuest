@@ -1,8 +1,6 @@
 import {
   ArrowRight,
-  Bell,
   Menu,
-  Search,
   Settings,
   UserRound,
   X,
@@ -152,25 +150,7 @@ export default function WorkspaceShell({
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          <div className="workspace-search">
-            <Search size={17} />
-            <input
-              type="search"
-              placeholder="Search anything..."
-              aria-label="Search"
-            />
-          </div>
-
           <div className="workspace-topbar-right">
-            <button
-              type="button"
-              className="workspace-notification"
-              aria-label="Notifications"
-            >
-              <Bell size={18} />
-              <span />
-            </button>
-
             <Link to="/profile" className="workspace-user">
               <div className="workspace-avatar">{initials || "CQ"}</div>
 
