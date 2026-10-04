@@ -163,6 +163,7 @@ export default function DashboardPage() {
 
       {sidebarOpen && (
         <button
+          type="button"
           className="dashboard-overlay"
           aria-label="Close menu"
           onClick={() => setSidebarOpen(false)}
@@ -175,6 +176,7 @@ export default function DashboardPage() {
         <header className="dashboard-topbar">
           <div className="dashboard-topbar-left">
             <button
+              type="button"
               className="dashboard-mobile-menu"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle navigation"
@@ -271,6 +273,7 @@ export default function DashboardPage() {
               <div className="dashboard-tabs">
                 {["All", "Pending", "In Progress", "Done"].map((tab) => (
                   <button
+                    type="button"
                     key={tab}
                     className={activeTab === tab ? "active" : ""}
                     onClick={() => setActiveTab(tab)}

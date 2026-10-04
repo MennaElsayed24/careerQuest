@@ -101,6 +101,12 @@ export default function TasksPage() {
                 title: form.title.trim(),
                 priority: form.priority,
                 status: form.status,
+                statusBeforeDone:
+                  form.status === task.status
+                    ? task.statusBeforeDone
+                    : form.status === "Done" && task.status !== "Done"
+                      ? task.status
+                      : undefined,
                 category: form.category.trim() || "Learning",
               }
             : task,
@@ -132,7 +138,12 @@ export default function TasksPage() {
         task.id === id
           ? {
               ...task,
-              status: task.status === "Done" ? "Pending" : "Done",
+              status:
+                task.status === "Done"
+                  ? task.statusBeforeDone ?? "Pending"
+                  : "Done",
+              statusBeforeDone:
+                task.status === "Done" ? undefined : task.status,
             }
           : task,
       ),

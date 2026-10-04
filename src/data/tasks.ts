@@ -6,6 +6,7 @@ export interface Task {
   title: string;
   priority: TaskPriority;
   status: TaskStatus;
+  statusBeforeDone?: Exclude<TaskStatus, "Done">;
   category: string;
   createdAt: string;
 }
